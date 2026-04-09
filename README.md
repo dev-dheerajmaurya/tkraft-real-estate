@@ -2,6 +2,8 @@
 
 Hey team! Here is my submission for the Mid-level Full-Stack Engineer assessment. I've built out the core property listing backbone exactly as requested.
 
+🌐 **Live Demo**: [https://tkraft-realestate.vercel.app/](https://tkraft-realestate.vercel.app/)
+
 I decided to run with Next.js 16 (App Router) since it handles both frontend and API routes smoothly. Everything is tied to a PostgreSQL database (I used Neon DB while building this).
 
 ## What I've implemented:
