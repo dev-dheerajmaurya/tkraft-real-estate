@@ -91,8 +91,9 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
             </div>
           </div>
 
-          {/* Beds / Baths stats row (skip for land or 0-bedroom properties) */}
-          {property.bedrooms > 0 && (
+          {/* Stats row — adapts icon based on property type */}
+          {property.bedrooms > 0 ? (
+            // Residential: bed + bath blocks
             <div className="grid grid-cols-2 divide-x divide-gray-100 dark:divide-zinc-800 border-b border-gray-100 dark:border-zinc-800">
               <div className="flex items-center gap-2 px-6 py-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
@@ -107,6 +108,24 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
                   <p className="text-xs text-gray-400 dark:text-zinc-500">Bathrooms</p>
                   <p className="font-semibold text-gray-800 dark:text-zinc-200">{property.bathrooms}</p>
                 </div>
+              </div>
+            </div>
+          ) : property.property_type === 'Land' ? (
+            // Land: map grid icon with area label
+            <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 dark:border-zinc-800">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+              <div>
+                <p className="text-xs text-gray-400 dark:text-zinc-500">Property Type</p>
+                <p className="font-semibold text-gray-800 dark:text-zinc-200">Open Land Plot</p>
+              </div>
+            </div>
+          ) : (
+            // Business / Commercial: building icon
+            <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 dark:border-zinc-800">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
+              <div>
+                <p className="text-xs text-gray-400 dark:text-zinc-500">Property Type</p>
+                <p className="font-semibold text-gray-800 dark:text-zinc-200">Commercial Space</p>
               </div>
             </div>
           )}

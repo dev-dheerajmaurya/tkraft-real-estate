@@ -151,6 +151,7 @@ export default function Home() {
                 <div className="border-t border-gray-100 dark:border-zinc-800 px-5 py-3 flex items-center justify-between">
                   {/* Show bed/bath only if relevant */}
                   {p.bedrooms > 0 ? (
+                    // Residential: show bed + bath counts
                     <span className="text-xs text-gray-500 dark:text-zinc-500 flex items-center gap-2">
                       <span className="flex items-center gap-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
@@ -162,8 +163,18 @@ export default function Home() {
                         {p.bathrooms} Baths
                       </span>
                     </span>
+                  ) : p.property_type === 'Land' ? (
+                    // Land: map + area icon
+                    <span className="text-xs text-gray-500 dark:text-zinc-500 flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+                      Open Land Plot
+                    </span>
                   ) : (
-                    <span className="text-xs text-gray-400 dark:text-zinc-600">Land / Commercial</span>
+                    // Business / Commercial: building icon
+                    <span className="text-xs text-gray-500 dark:text-zinc-500 flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
+                      Commercial Space
+                    </span>
                   )}
 
                   <Link
