@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-// Color map for status badges — keeps the JSX clean
+// Badge colors per status — one lookup to keep JSX tidy
 const statusColors: Record<string, string> = {
   "For Sale":  "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
   "For Rent":  "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
@@ -10,19 +10,19 @@ const statusColors: Record<string, string> = {
 };
 
 export default function Home() {
-  // Forgiving 'any' for a quick assessment build
+  // 'any' for now — typed interfaces can wait till prod
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Track all search form states
+  // Every filter the user can tweak lives here
   const [filters, setFilters] = useState({ suburb: "", type: "", price: "", status: "" });
 
-  // Hit the backend and pull fresh listings
+  // Ask the backend nicely for fresh listings
   const fetchListings = async () => {
     setLoading(true);
     const params = new URLSearchParams();
 
-    // Only append filters the user actually filled in
+    // Skip empty filters — no point cluttering the URL
     if (filters.suburb) params.append("suburb", filters.suburb);
     if (filters.type)   params.append("type",   filters.type);
     if (filters.status) params.append("status", filters.status);
@@ -39,16 +39,16 @@ export default function Home() {
     }
   };
 
-  // Fire on mount
+  // Load listings the moment the page wakes up
   useEffect(() => { fetchListings(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Shared select styles — one place to rule them all
+  // Shared select style — change here, updates everywhere
   const selectCls = "w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition";
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-zinc-950 font-sans">
 
-      {/* Top Header */}
+      {/* Sticky top header */}
       <header className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
@@ -63,7 +63,7 @@ export default function Home() {
 
       <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
 
-        {/* Search Filters */}
+        {/* Search filter bar */}
         <section className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm p-5">
           <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-3">Filter Properties</p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -109,18 +109,28 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Property Grid */}
+        {/* Listing cards grid */}
         {data.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {data.map((p) => (
               <div
                 key={p.id}
-                className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
+                className="group bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
               >
-                {/* Card Header */}
+                {/* Photo up top — zooms on hover, hides cleanly if missing */}
+                <div className="relative h-44 w-full overflow-hidden rounded-t-xl bg-gray-100 dark:bg-zinc-800">
+                  <img
+                    src={`/images/listings-${p.id}.png`}
+                    alt={p.title}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                </div>
+
+                {/* Card content */}
                 <div className="p-5 flex-1 space-y-3">
 
-                  {/* Status + Type badges */}
+                  {/* Status + type color pills */}
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${statusColors[p.status] ?? "bg-gray-100 text-gray-600"}`}>
                       {p.status}
@@ -134,24 +144,24 @@ export default function Home() {
                     {p.title}
                   </h2>
 
-                  {/* Location */}
+                  {/* Location with map pin */}
                   <p className="text-xs text-gray-500 dark:text-zinc-500 flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                     {p.suburb}
                   </p>
 
-                  {/* Price — uses en-IN for proper lakh/crore formatting */}
+                  {/* en-IN gives us proper Nepali lakh/crore formatting */}
                   <p className="text-blue-600 dark:text-blue-400 font-bold text-lg">
                     Rs. {Number(p.price).toLocaleString("en-IN")}
                     {p.status !== "For Sale" && <span className="text-xs font-normal text-gray-400 ml-1">/month</span>}
                   </p>
                 </div>
 
-                {/* Card Footer - Beds/Baths + CTA */}
+                {/* Footer: property feature hints + detail link */}
                 <div className="border-t border-gray-100 dark:border-zinc-800 px-5 py-3 flex items-center justify-between">
-                  {/* Show bed/bath only if relevant */}
+                  {/* Show appropriate icon for each property category */}
                   {p.bedrooms > 0 ? (
-                    // Residential: show bed + bath counts
+                    // Houses/flats/apartments: bed + bath
                     <span className="text-xs text-gray-500 dark:text-zinc-500 flex items-center gap-2">
                       <span className="flex items-center gap-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
@@ -164,13 +174,13 @@ export default function Home() {
                       </span>
                     </span>
                   ) : p.property_type === 'Land' ? (
-                    // Land: map + area icon
+                    // Land: terrain/map icon
                     <span className="text-xs text-gray-500 dark:text-zinc-500 flex items-center gap-1">
                       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
                       Open Land Plot
                     </span>
                   ) : (
-                    // Business / Commercial: building icon
+                    // Everything else is commercial
                     <span className="text-xs text-gray-500 dark:text-zinc-500 flex items-center gap-1">
                       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
                       Commercial Space
@@ -188,7 +198,7 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          // Empty state — shown when filters return nothing
+          // Nothing matched — let the user know kindly
           <div className="text-center py-20 text-gray-400 dark:text-zinc-600">
             <p className="text-4xl mb-3">🏚️</p>
             <p className="font-medium">No properties found.</p>

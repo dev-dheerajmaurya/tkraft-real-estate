@@ -2,24 +2,24 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 
-// Status badge colors match the listing grid
+// Same status colors as the listing grid — consistency matters
 const statusColors: Record<string, string> = {
   "For Sale":  "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
   "For Rent":  "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
   "For Lease": "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
 };
 
-// Destructure Next 15+ async params
+// Unwrap Next.js 15+ async route params the right way
 export default function Detail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
 
   const [property, setProperty] = useState<any>(null);
 
-  // Toggle admin state for the assessment RBAC demo
+  // Drives the RBAC demo — flips the header sent to the API
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Pass the simulated role header on every fetch
+    // Re-fetches whenever ID or admin toggle changes
     fetch(`/api/listings/${id}`, {
       headers: { "x-user-role": isAdmin ? "admin" : "viewer" },
     })
@@ -28,7 +28,7 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
       .catch((err) => console.error("Could not grab property details.", err));
   }, [id, isAdmin]);
 
-  // Loading skeleton while we wait for the DB
+  // Gentle pulse while the API does its thing
   if (!property) {
     return (
       <main className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
@@ -42,7 +42,7 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-zinc-950 font-sans">
 
-      {/* Sticky nav-bar that mirrors the listing page header */}
+      {/* Matches the listing page header for consistent nav */}
       <header className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-sm text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1 hover:underline">
@@ -56,13 +56,23 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
 
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
 
-        {/* Main property card */}
+        {/* Property detail card */}
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm overflow-hidden">
 
-          {/* Card top — title, badges, price */}
+          {/* Full-width hero photo */}
+          <div className="h-72 w-full overflow-hidden bg-gray-100 dark:bg-zinc-800">
+            <img
+              src={`/images/listings-${property.id}.png`}
+              alt={property.title}
+              className="h-full w-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          </div>
+
+          {/* Title, badges, price block */}
           <div className="p-6 space-y-4 border-b border-gray-100 dark:border-zinc-800">
 
-            {/* Status + type pills */}
+            {/* Color-coded status + type pills */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[property.status] ?? "bg-gray-100 text-gray-600"}`}>
                 {property.status}
@@ -76,13 +86,13 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
               {property.title}
             </h1>
 
-            {/* Location */}
+            {/* Suburb with a map pin */}
             <p className="text-sm text-gray-500 dark:text-zinc-500 flex items-center gap-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
               {property.suburb}
             </p>
 
-            {/* Price — en-IN gives us proper lakh/crore formatting */}
+            {/* en-IN locale = proper lakhs/crores display */}
             <div>
               <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                 Rs. {Number(property.price).toLocaleString("en-IN")}
@@ -91,9 +101,9 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
             </div>
           </div>
 
-          {/* Stats row — adapts icon based on property type */}
+          {/* Smart stat row — changes icon based on type */}
           {property.bedrooms > 0 ? (
-            // Residential: bed + bath blocks
+            // Residential — show beds and baths
             <div className="grid grid-cols-2 divide-x divide-gray-100 dark:divide-zinc-800 border-b border-gray-100 dark:border-zinc-800">
               <div className="flex items-center gap-2 px-6 py-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
@@ -111,7 +121,7 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
               </div>
             </div>
           ) : property.property_type === 'Land' ? (
-            // Land: map grid icon with area label
+            // Land — terrain map icon
             <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 dark:border-zinc-800">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
               <div>
@@ -120,7 +130,7 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
               </div>
             </div>
           ) : (
-            // Business / Commercial: building icon
+            // Business/commercial — building icon
             <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 dark:border-zinc-800">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
               <div>
@@ -130,14 +140,14 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
             </div>
           )}
 
-          {/* Description */}
+          {/* Description + agent info */}
           <div className="p-6 space-y-4">
             <div>
               <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">About this property</p>
               <p className="text-gray-700 dark:text-zinc-300 leading-relaxed text-sm">{property.description}</p>
             </div>
 
-            {/* Agent info block */}
+            {/* Agent card with avatar initial */}
             <div className="bg-gray-50 dark:bg-zinc-800 rounded-lg p-4 flex items-start gap-3 border border-gray-100 dark:border-zinc-700">
               <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 flex items-center justify-center font-semibold text-sm flex-shrink-0">
                 {property.agent_name?.charAt(0)}
@@ -151,7 +161,7 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
           </div>
         </div>
 
-        {/* RBAC Admin Toggle — the key assessment requirement */}
+        {/* RBAC toggle — the star of this assessment */}
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm p-5">
           <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-3">Role-Based Access Demo</p>
 
@@ -163,7 +173,7 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
               />
-              {/* Custom toggle switch */}
+              {/* Pretty toggle switch — beats a raw checkbox */}
               <div className="w-10 h-6 bg-gray-200 dark:bg-zinc-700 peer-checked:bg-blue-600 rounded-full transition-colors" />
               <div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
             </div>
@@ -172,7 +182,7 @@ export default function Detail({ params }: { params: Promise<{ id: string }> }) 
             </span>
           </label>
 
-          {/* Render admin-only notes only if the backend trusted us enough to return them */}
+          {/* Admin notes — only visible if the backend chose to reveal them */}
           {isAdmin && property.internal_status_notes && (
             <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg p-4">
               <p className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-1">Internal Note (Admin Only)</p>
