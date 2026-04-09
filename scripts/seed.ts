@@ -45,8 +45,8 @@ async function main() {
     const agentsRes = await pool.query(`
       INSERT INTO agents (name, email, phone) 
       VALUES 
-        ('Alice Wonder', 'alice@techkraft.com', '+977-9800000001'),
-        ('Bob Builder', 'bob@techkraft.com', '+977-9800000002')
+        ('Ramesh Shrestha', 'ramesh.shrestha@tkraftrealty.com.np', '+977-9841234567'),
+        ('Sunita Tamang', 'sunita.tamang@tkraftrealty.com.np', '+977-9857654321')
       RETURNING id;
     `);
     
@@ -59,14 +59,14 @@ async function main() {
       INSERT INTO properties 
         (title, description, suburb, property_type, status, price, bedrooms, bathrooms, agent_id, internal_status_notes)
       VALUES 
-        ('Baluwatar Premier Residence', 'Fully furnished 4-Aana modern house with parking facility.', 'Kathmandu', 'House', 'For Sale', 45000000, 4, 3, $1, 'Owner very motivated to sell.'),
-        ('Jhamsikhel Studio Apartment', 'Premium 2BHK located in the heart of Jhamsikhel VIP residential area.', 'Lalitpur', 'Apartment', 'For Rent', 65000, 2, 1, $2, 'Viewing arranged for next week.'),
-        ('Suryabinayak 3-Aana Plot', 'South-facing residential plot highly suitable for fresh construction.', 'Bhaktapur', 'Land', 'For Sale', 8500000, 0, 0, $1, 'Negotiable price.'),
-        ('Putalisadak Corporate Space', 'Spacious semi-furnished office floor with power backup.', 'Kathmandu', 'Business', 'For Lease', 150000, 5, 2, $2, 'VIP clients only.'),
-        ('Imadol 2BHK Flat', 'Affordable residential setup with 24/7 water supply & parking.', 'Lalitpur', 'Flat', 'For Rent', 25000, 2, 1, $1, ''),
-        ('Traditional Newari Bungalow', 'Exquisite multi-story heritage style house near Durbar Square.', 'Bhaktapur', 'House', 'For Sale', 110000000, 6, 4, $2, 'Foreigner buyers interested.'),
-        ('Baneshwor Ground Floor Shutter', 'Prime shutter location on the main highway corridor.', 'Kathmandu', 'Business', 'For Lease', 45000, 1, 1, $1, ''),
-        ('Godawari Greenfield Land', 'Peaceful plot spanning over an acre, suitable for resorts or high-end housing.', 'Lalitpur', 'Land', 'For Sale', 55000000, 0, 0, $2, 'Clear papers.')
+        ('4BHK Bungalow in Budhanilkantha', 'Spacious 4-bedroom bungalow with a private garden, parking for 2 cars, and mountain views. Located in a quiet lane of Budhanilkantha, ideal for families seeking peace without sacrificing city access.', 'Kathmandu', 'House', 'For Sale', 42500000, 4, 3, $1, 'Owner very motivated to sell.'),
+        ('2BHK Apartment in Pulchowk', 'Fully furnished 2-bedroom apartment on the 3rd floor of a gated complex. Includes 24hr security, backup power, and covered parking. Walking distance from Pulchowk Engineering Campus.', 'Lalitpur', 'Apartment', 'For Rent', 55000, 2, 2, $2, 'Viewing arranged for next week.'),
+        ('5 Aana Plot in Suryabinayak', 'Flat, road-facing 5 aana land in the heart of Suryabinayak. Suitable for residential construction. All government paperwork cleared. Water and electricity connections available at plot edge.', 'Bhaktapur', 'Land', 'For Sale', 7200000, 0, 0, $1, 'Negotiable price.'),
+        ('Commercial Office Space in New Baneshwor', '3,200 sq ft open-plan office space on the 4th floor of a modern building. Fibre internet ready, conference room, and dedicated washroom. Suitable for IT companies or corporate HQs.', 'Kathmandu', 'Business', 'For Lease', 175000, 0, 2, $2, 'VIP clients only.'),
+        ('Cozy 2BHK Flat in Imadol', 'Compact 2-bedroom flat in a well-maintained building. Tiled floors, attached bathroom, kitchen with chimney setup included. Ideal for young professionals or small families. Near Imadol Chowk.', 'Lalitpur', 'Flat', 'For Rent', 22000, 2, 1, $1, ''),
+        ('Heritage-Style House in Dattatreya Tole', '6-bedroom traditional newari-style banglow with original woodwork, inner courtyard, and rooftop access overlooking Dattatreya Square. A rare opportunity in the heritage zone of Bhaktapur.', 'Bhaktapur', 'House', 'For Sale', 98000000, 6, 4, $2, 'Foreigner buyers interested.'),
+        ('Prime Retail Shop in Asan Bazaar', 'Ground floor corner shop with 400 sq ft area in the busiest retail belt of Kathmandu. High foot traffic, dual entrance, storage room at back. Ideal for grocery, clothing, or food outlet.', 'Kathmandu', 'Business', 'For Lease', 40000, 0, 1, $1, ''),
+        ('12 Aana Agricultural Land in Godawari', 'Fertile agricultural land in the outskirts of Lalitpur near Godawari. Suitable for organic farming or future residential development. Road access from Godawari main road. No disputes on ownership.', 'Lalitpur', 'Land', 'For Sale', 48000000, 0, 0, $2, 'Clear papers.')
       RETURNING id;
     `, [aliceId, bobId]);
 
