@@ -59,14 +59,14 @@ async function main() {
       INSERT INTO properties 
         (title, description, suburb, property_type, status, price, bedrooms, bathrooms, agent_id, internal_status_notes)
       VALUES 
-        ('Luxury Family House', 'Beautiful 4-bedroom house with a large backyard.', 'Kathmandu', 'House', 'For Sale', 45000000, 4, 3, $1, 'Owner very motivated to sell.'),
-        ('Modern City Apartment', 'Sleek 2-bedroom apartment right in the center.', 'Lalitpur', 'Apartment', 'For Rent', 65000, 2, 1, $2, 'Viewing arranged for next week.'),
-        ('Residential Plot', 'Perfect empty land to build your dream home.', 'Bhaktapur', 'Land', 'For Sale', 8500000, 0, 0, $1, 'Negotiable price.'),
-        ('Commercial IT Space', 'Fully equipped 5-room office space.', 'Kathmandu', 'Business', 'For Lease', 150000, 5, 2, $2, 'VIP clients only.'),
-        ('Budget Flat', 'A cozy flat suited for a small family.', 'Lalitpur', 'Flat', 'For Rent', 25000, 2, 1, $1, ''),
-        ('Heritage Banglow', 'Traditional architectural banglow in Durbar square perimeter.', 'Bhaktapur', 'House', 'For Sale', 110000000, 6, 4, $2, 'Foreigner buyers interested.'),
-        ('Retail Shop Space', 'Ground floor shop near main road.', 'Kathmandu', 'Business', 'For Lease', 45000, 1, 1, $1, ''),
-        ('Spacious Outer Land', 'Large agricultural land for future investments.', 'Lalitpur', 'Land', 'For Sale', 55000000, 0, 0, $2, 'Clear papers.')
+        ('Baluwatar Premier Residence', 'Fully furnished 4-Aana modern house with parking facility.', 'Kathmandu', 'House', 'For Sale', 45000000, 4, 3, $1, 'Owner very motivated to sell.'),
+        ('Jhamsikhel Studio Apartment', 'Premium 2BHK located in the heart of Jhamsikhel VIP residential area.', 'Lalitpur', 'Apartment', 'For Rent', 65000, 2, 1, $2, 'Viewing arranged for next week.'),
+        ('Suryabinayak 3-Aana Plot', 'South-facing residential plot highly suitable for fresh construction.', 'Bhaktapur', 'Land', 'For Sale', 8500000, 0, 0, $1, 'Negotiable price.'),
+        ('Putalisadak Corporate Space', 'Spacious semi-furnished office floor with power backup.', 'Kathmandu', 'Business', 'For Lease', 150000, 5, 2, $2, 'VIP clients only.'),
+        ('Imadol 2BHK Flat', 'Affordable residential setup with 24/7 water supply & parking.', 'Lalitpur', 'Flat', 'For Rent', 25000, 2, 1, $1, ''),
+        ('Traditional Newari Bungalow', 'Exquisite multi-story heritage style house near Durbar Square.', 'Bhaktapur', 'House', 'For Sale', 110000000, 6, 4, $2, 'Foreigner buyers interested.'),
+        ('Baneshwor Ground Floor Shutter', 'Prime shutter location on the main highway corridor.', 'Kathmandu', 'Business', 'For Lease', 45000, 1, 1, $1, ''),
+        ('Godawari Greenfield Land', 'Peaceful plot spanning over an acre, suitable for resorts or high-end housing.', 'Lalitpur', 'Land', 'For Sale', 55000000, 0, 0, $2, 'Clear papers.')
       RETURNING id;
     `, [aliceId, bobId]);
 
