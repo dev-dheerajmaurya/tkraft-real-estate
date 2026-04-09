@@ -60,12 +60,12 @@ async function main() {
         (title, description, suburb, property_type, status, price, bedrooms, bathrooms, agent_id, internal_status_notes)
       VALUES 
         ('Luxury Family House', 'Beautiful 4-bedroom house with a large backyard.', 'Kathmandu', 'House', 'For Sale', 45000000, 4, 3, $1, 'Owner very motivated to sell.'),
-        ('Modern City Apartment', 'Sleek 2-bedroom apartment right in the center.', 'Lalitpur', 'Apartment', 'For Rent', 15000000, 2, 1, $2, 'Viewing arranged for next week.'),
+        ('Modern City Apartment', 'Sleek 2-bedroom apartment right in the center.', 'Lalitpur', 'Apartment', 'For Rent', 65000, 2, 1, $2, 'Viewing arranged for next week.'),
         ('Residential Plot', 'Perfect empty land to build your dream home.', 'Bhaktapur', 'Land', 'For Sale', 8500000, 0, 0, $1, 'Negotiable price.'),
-        ('Commercial IT Space', 'Fully equipped 5-room office space.', 'Kathmandu', 'Business', 'For Lease', 85000000, 5, 2, $2, 'VIP clients only.'),
-        ('Budget Flat', 'A cozy flat suited for a small family.', 'Lalitpur', 'Flat', 'For Rent', 9000000, 2, 1, $1, ''),
+        ('Commercial IT Space', 'Fully equipped 5-room office space.', 'Kathmandu', 'Business', 'For Lease', 150000, 5, 2, $2, 'VIP clients only.'),
+        ('Budget Flat', 'A cozy flat suited for a small family.', 'Lalitpur', 'Flat', 'For Rent', 25000, 2, 1, $1, ''),
         ('Heritage Banglow', 'Traditional architectural banglow in Durbar square perimeter.', 'Bhaktapur', 'House', 'For Sale', 110000000, 6, 4, $2, 'Foreigner buyers interested.'),
-        ('Retail Shop Space', 'Ground floor shop near main road.', 'Kathmandu', 'Business', 'For Lease', 25000000, 1, 1, $1, ''),
+        ('Retail Shop Space', 'Ground floor shop near main road.', 'Kathmandu', 'Business', 'For Lease', 45000, 1, 1, $1, ''),
         ('Spacious Outer Land', 'Large agricultural land for future investments.', 'Lalitpur', 'Land', 'For Sale', 55000000, 0, 0, $2, 'Clear papers.')
       RETURNING id;
     `, [aliceId, bobId]);
