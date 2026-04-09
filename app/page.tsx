@@ -43,9 +43,9 @@ export default function Home() {
       <h1 className="text-3xl font-bold">TKraft Real Estate</h1>
       
       {/* Search Bar Block */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-4 bg-gray-100 rounded-lg shadow-sm items-center">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-4 bg-gray-100 dark:bg-zinc-800 rounded-lg shadow-sm items-center">
         <select 
-          className="p-3 border rounded text-gray-700 w-full" 
+          className="p-3 border dark:border-zinc-700 rounded text-gray-700 dark:text-zinc-200 dark:bg-zinc-900 w-full" 
           onChange={(e) => setFilters({ ...filters, type: e.target.value })}
         >
           <option value="">All Categories</option>
@@ -57,7 +57,7 @@ export default function Home() {
         </select>
         
         <select 
-          className="p-3 border rounded text-gray-700 w-full" 
+          className="p-3 border dark:border-zinc-700 rounded text-gray-700 dark:text-zinc-200 dark:bg-zinc-900 w-full" 
           onChange={(e) => setFilters({ ...filters, suburb: e.target.value })}
         >
           <option value="">All Locations</option>
@@ -67,7 +67,7 @@ export default function Home() {
         </select>
 
         <select 
-          className="p-3 border rounded text-gray-700 w-full" 
+          className="p-3 border dark:border-zinc-700 rounded text-gray-700 dark:text-zinc-200 dark:bg-zinc-900 w-full" 
           onChange={(e) => setFilters({ ...filters, status: e.target.value })}
         >
           <option value="">All Status</option>
@@ -77,7 +77,7 @@ export default function Home() {
         </select>
 
         <select 
-          className="p-3 border rounded text-gray-700 w-full" 
+          className="p-3 border dark:border-zinc-700 rounded text-gray-700 dark:text-zinc-200 dark:bg-zinc-900 w-full" 
           onChange={(e) => setFilters({ ...filters, price: e.target.value })}
         >
           <option value="">Price</option>
@@ -101,19 +101,19 @@ export default function Home() {
       {/* Property Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {data.map((p) => (
-          <div key={p.id} className="border p-4 bg-white rounded-lg shadow-sm hover:shadow-md">
-            <h2 className="font-bold text-lg mb-1">{p.title}</h2>
-            <p className="text-sm text-gray-600">{p.suburb} • {p.property_type}</p>
+          <div key={p.id} className="border dark:border-zinc-700 p-4 bg-white dark:bg-zinc-800 rounded-lg shadow-sm hover:shadow-md">
+            <h2 className="font-bold text-lg mb-1 text-gray-900 dark:text-zinc-100">{p.title}</h2>
+            <p className="text-sm text-gray-600 dark:text-zinc-400">{p.suburb} • {p.property_type}</p>
             
             <div className="flex justify-between items-center my-4">
                {/* 'en-IN' forces Lakhs/Crores formatting! */}
-               <span className="text-blue-600 font-extrabold">
+               <span className="text-blue-600 dark:text-blue-400 font-extrabold">
                  Rs. {Number(p.price).toLocaleString('en-IN')}
                </span>
-               <span className="text-xs text-gray-500 font-medium flex items-center gap-1">
+               <span className="text-xs text-gray-500 dark:text-zinc-400 font-medium flex items-center gap-1">
                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
                  {p.bedrooms}
-                 <span className="mx-1 text-gray-300">|</span>
+                 <span className="mx-1 text-gray-300 dark:text-zinc-600">|</span>
                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="10" x2="8" y1="5" y2="7"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="7" x2="7" y1="19" y2="21"/><line x1="17" x2="17" y1="19" y2="21"/></svg>
                  {p.bathrooms}
                </span>
@@ -128,7 +128,7 @@ export default function Home() {
       
       {/* Clean empty state handler */}
       {data.length === 0 && (
-        <p className="text-gray-500">No properties found. Try loosening the filters?</p>
+        <p className="text-gray-500 dark:text-zinc-400">No properties found. Try loosening the filters?</p>
       )}
     </main>
   );
