@@ -2,78 +2,170 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 
+// Status badge colors match the listing grid
+const statusColors: Record<string, string> = {
+  "For Sale":  "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+  "For Rent":  "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
+  "For Lease": "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+};
+
 // Destructure Next 15+ async params
 export default function Detail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  
+
   const [property, setProperty] = useState<any>(null);
-  
-  // Toggle admin state for assessment demo!
+
+  // Toggle admin state for the assessment RBAC demo
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Fetch backend passing the simulated role
+    // Pass the simulated role header on every fetch
     fetch(`/api/listings/${id}`, {
-      headers: { 
-        'x-user-role': isAdmin ? 'admin' : 'viewer' 
-      }
+      headers: { "x-user-role": isAdmin ? "admin" : "viewer" },
     })
       .then((res) => res.json())
       .then((data) => setProperty(data.data))
       .catch((err) => console.error("Could not grab property details.", err));
   }, [id, isAdmin]);
 
+  // Loading skeleton while we wait for the DB
   if (!property) {
-    return <p className="p-6">Loading details...</p>;
+    return (
+      <main className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
+        <p className="text-gray-400 dark:text-zinc-500 animate-pulse">Loading property...</p>
+      </main>
+    );
   }
 
+  const isRental = property.status !== "For Sale";
+
   return (
-    <main className="p-6 max-w-3xl mx-auto space-y-4 font-sans">
-      <Link href="/" className="text-blue-500 dark:text-blue-400 font-medium hover:underline">
-        &larr; Back to Search
-      </Link>
-      
-      <div className="border dark:border-zinc-700 p-6 rounded-lg bg-white dark:bg-zinc-800 shadow-sm space-y-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-zinc-100">{property.title}</h1>
-        
-        <div className="flex justify-between border-b dark:border-zinc-700 pb-4">
-          <p className="text-gray-600 dark:text-zinc-400">{property.suburb} • {property.property_type}</p>
-             <div className="text-right">
-                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  Rs. {Number(property.price).toLocaleString('en-IN')}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1 flex items-center justify-end gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-                  {property.bedrooms} Beds 
-                  <span className="mx-2 text-gray-300 dark:text-zinc-600">|</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="10" x2="8" y1="5" y2="7"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="7" x2="7" y1="19" y2="21"/><line x1="17" x2="17" y1="19" y2="21"/></svg>
-                  {property.bathrooms} Baths
-                </p>
-             </div>
+    <main className="min-h-screen bg-gray-50 dark:bg-zinc-950 font-sans">
+
+      {/* Sticky nav-bar that mirrors the listing page header */}
+      <header className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="text-sm text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1 hover:underline">
+            ← Back to listings
+          </Link>
+          <span className="text-xl font-bold text-gray-900 dark:text-zinc-100 tracking-tight">
+            TKraft <span className="text-blue-600">Real Estate</span>
+          </span>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+
+        {/* Main property card */}
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm overflow-hidden">
+
+          {/* Card top — title, badges, price */}
+          <div className="p-6 space-y-4 border-b border-gray-100 dark:border-zinc-800">
+
+            {/* Status + type pills */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[property.status] ?? "bg-gray-100 text-gray-600"}`}>
+                {property.status}
+              </span>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400">
+                {property.property_type}
+              </span>
+            </div>
+
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 leading-snug">
+              {property.title}
+            </h1>
+
+            {/* Location */}
+            <p className="text-sm text-gray-500 dark:text-zinc-500 flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              {property.suburb}
+            </p>
+
+            {/* Price — en-IN gives us proper lakh/crore formatting */}
+            <div>
+              <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                Rs. {Number(property.price).toLocaleString("en-IN")}
+                {isRental && <span className="text-base font-normal text-gray-400 ml-1">/month</span>}
+              </p>
+            </div>
+          </div>
+
+          {/* Beds / Baths stats row (skip for land or 0-bedroom properties) */}
+          {property.bedrooms > 0 && (
+            <div className="grid grid-cols-2 divide-x divide-gray-100 dark:divide-zinc-800 border-b border-gray-100 dark:border-zinc-800">
+              <div className="flex items-center gap-2 px-6 py-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+                <div>
+                  <p className="text-xs text-gray-400 dark:text-zinc-500">Bedrooms</p>
+                  <p className="font-semibold text-gray-800 dark:text-zinc-200">{property.bedrooms}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 px-6 py-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="10" x2="8" y1="5" y2="7"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="7" x2="7" y1="19" y2="21"/><line x1="17" x2="17" y1="19" y2="21"/></svg>
+                <div>
+                  <p className="text-xs text-gray-400 dark:text-zinc-500">Bathrooms</p>
+                  <p className="font-semibold text-gray-800 dark:text-zinc-200">{property.bathrooms}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Description */}
+          <div className="p-6 space-y-4">
+            <div>
+              <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">About this property</p>
+              <p className="text-gray-700 dark:text-zinc-300 leading-relaxed text-sm">{property.description}</p>
+            </div>
+
+            {/* Agent info block */}
+            <div className="bg-gray-50 dark:bg-zinc-800 rounded-lg p-4 flex items-start gap-3 border border-gray-100 dark:border-zinc-700">
+              <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 flex items-center justify-center font-semibold text-sm flex-shrink-0">
+                {property.agent_name?.charAt(0)}
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-0.5">Listed by</p>
+                <p className="text-sm font-semibold text-gray-800 dark:text-zinc-200">{property.agent_name}</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-500">{property.agent_email}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <p className="text-gray-700 dark:text-zinc-300 leading-relaxed">{property.description}</p>
-        <p className="bg-gray-50 dark:bg-zinc-900 dark:text-zinc-400 p-3 text-sm rounded border dark:border-zinc-700">
-          Agent: {property.agent_name} ({property.agent_email})
-        </p>
-        
-        {/* Assessment Admin Toggle UI */}
-        <label className="flex items-center gap-2 font-bold text-red-600 dark:text-red-400 mt-6 pt-4 border-t dark:border-zinc-700 cursor-pointer">
-          <input 
-            type="checkbox" 
-            checked={isAdmin} 
-            onChange={(e) => setIsAdmin(e.target.checked)} 
-            className="w-4 h-4 rounded" 
-          />
-          Simulate Admin Role
-        </label>
-        
-        {/* Render notes only if backend sent them */}
-        {isAdmin && property.internal_status_notes && (
-          <p className="bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-300 p-3 rounded border border-red-200 dark:border-red-800/50">
-             Admin Meta: {property.internal_status_notes}
-          </p>
-        )}
+        {/* RBAC Admin Toggle — the key assessment requirement */}
+        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm p-5">
+          <p className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-3">Role-Based Access Demo</p>
+
+          <label className="flex items-center gap-3 cursor-pointer">
+            <div className="relative">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+              />
+              {/* Custom toggle switch */}
+              <div className="w-10 h-6 bg-gray-200 dark:bg-zinc-700 peer-checked:bg-blue-600 rounded-full transition-colors" />
+              <div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
+            </div>
+            <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+              Simulate Admin Role
+            </span>
+          </label>
+
+          {/* Render admin-only notes only if the backend trusted us enough to return them */}
+          {isAdmin && property.internal_status_notes && (
+            <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg p-4">
+              <p className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-1">Internal Note (Admin Only)</p>
+              <p className="text-sm text-red-800 dark:text-red-300">{property.internal_status_notes}</p>
+            </div>
+          )}
+
+          {isAdmin && !property.internal_status_notes && (
+            <p className="mt-3 text-xs text-gray-400 dark:text-zinc-600 italic">No internal notes for this listing.</p>
+          )}
+        </div>
+
       </div>
     </main>
   );
